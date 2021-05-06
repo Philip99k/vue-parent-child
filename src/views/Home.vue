@@ -17,12 +17,14 @@
     <h2>Children</h2>
     <ul class="list-group">
       <li v-for="child in children" v-bind:key="child.id" class="list-group-item  d-flex justify-content-between align-items-center">
-        {{ child.name }}
+        {{ child.firstName }} {{ child.lastName }}
         <button @click="deleteChild(child.id)" class="btn btn-danger">Delete</button>
       </li>
     </ul>
     <button @click="newChild" class="btn btn-primary  mt-2">Create new child</button>
   </div>
+
+  <Info/>
 
   <DeleteModal v-if="isDeleteParentModalVisible"
     @close="closeModalParent" @deleteOk="deleteFromModalParent"
@@ -35,9 +37,11 @@
 
 <script>
 import DeleteModal from "../components/DeleteModal.vue";
+import Info from "../components/Info.vue";
 export default {
   components:{
     DeleteModal,
+    Info
   },
   data(){   
     return {
@@ -48,14 +52,14 @@ export default {
   },
   computed: {    
     parents(){
-      return this.$store.getters.parentSet;
+      return this.$store.getters.allParents;
     },
     parentExists(){
       return this.$store.getters.parentExists;
     },
     selectedParentId: {
       get(){
-        return this.$store.state.selectedParentId;
+        return this.$store.state.parents.selectedParentId;
       },
       set(id){
         this.$store.dispatch('updateSelectedParentId',id);
@@ -69,12 +73,12 @@ export default {
         .filter(child => 
           child.id === this.$data.selectedChildId
         )[0];
-      return selectedChild.name;
+      return selectedChild.firstName + " " + selectedChild.lastName;
     },    
     nameOfSelectedParent(){
-      const selectedParent = this.$store.getters.parentSet
+      const selectedParent = this.$store.getters.allParents
         .filter(parent => 
-          parent.id === this.$store.state.selectedParentId
+          parent.id === this.$store.state.parents.selectedParentId
         )[0];
       return selectedParent.name;
     }    
