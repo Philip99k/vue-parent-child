@@ -24,6 +24,17 @@
     <button @click="newChild" class="btn btn-primary  mt-2">Create new child</button>
   </div>
 
+  <div v-if="parentExists" class="border mt-2 p-2">
+    <h2>Männlich - Weiblich Zähler</h2>
+    <p>Anzahl aller Männer:  {{azman}}</p>
+    <p>Anzahl aller Frauen:  {{azwoman}}</p>
+    <div >
+      <button v-on:click="addman" class="btn btn-info me-2 mt-2">Mann</button>
+      <button v-on:click="addwoman" class="btn btn-info  mt-2">Frau</button>
+    </div>
+    
+  </div>
+
   <Info/>
 
   <DeleteModal v-if="isDeleteParentModalVisible"
@@ -47,7 +58,9 @@ export default {
     return {
       isDeleteParentModalVisible: false,
       isDeleteChildModalVisible: false,      
-      selectedChildId: null
+      selectedChildId: null,
+      azman: 0,
+      azwoman: 0
     }
   },
   computed: {    
@@ -84,6 +97,14 @@ export default {
     }    
   },
   methods:{
+    addman(){
+      console.log("Mann");
+      this.azman++;
+    },
+    addwoman(){
+      console.log("Frau");
+      this.azwoman++;
+    },
     newParent(){
       this.$router.push('/create-parent');
     },
