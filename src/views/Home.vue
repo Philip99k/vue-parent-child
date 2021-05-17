@@ -6,7 +6,16 @@
       <option v-for="parent in parents" v-bind:value="parent.id" v-bind:key="parent.id" id="parent-select">
         {{ parent.name }}
       </option>
+       
     </select>
+   <div>
+     <div v-for="parent in parents" v-bind:value="parent.id" v-bind:key="parent.id" id="parent-select">
+       <p  v-if="selectedParentId == parent.id">{{ parent.gender }}</p>
+      </div>
+   </div>
+      
+    <br>
+    <!-- <p v-for="parent in parents" v-bind:value="parent.id" v-bind:key="parent.id" id="parent-select">{{ parent.gender }}</p> -->
     <div>
       <button v-if="parentExists" @click="deleteParent" class="btn btn-danger mt-2 me-2">Delete selected parent</button>
       <button @click="newParent" class="btn btn-primary mt-2">Create new parent</button>
