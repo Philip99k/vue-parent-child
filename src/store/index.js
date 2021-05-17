@@ -31,6 +31,20 @@ export default createStore({
             return state.parents.allIds.length;
         },
 
+        numberOfMan: state => {
+            return state.parents.allIds
+                .map(gender => state.parents.byId[gender])
+                .filter(parents =>
+                    parents.gender === "man").length;
+        },
+
+        numberOfWoman: state => {
+            return state.parents.allIds
+                .map(gender => state.parents.byId[gender])
+                .filter(parents =>
+                    parents.gender === "woman").length;
+        },
+
         parentExists: state => state.parents.allIds.length > 0,
 
         /************ CHILDREN *********************************************/

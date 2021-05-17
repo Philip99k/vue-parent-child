@@ -35,6 +35,8 @@
 
   <Info/>
 
+  <GenderInfo/>
+
   <DeleteModal v-if="isDeleteParentModalVisible"
     @close="closeModalParent" @deleteOk="deleteFromModalParent"
     typeOfElement="Parent" :nameOfElement="nameOfSelectedParent" />
@@ -47,10 +49,12 @@
 <script>
 import DeleteModal from "../components/DeleteModal.vue";
 import Info from "../components/Info.vue";
+import GenderInfo from "../components/GenderInfo.vue";
 export default {
   components:{
     DeleteModal,
-    Info
+    Info,
+    GenderInfo
   },
   data(){   
     return {
