@@ -28,9 +28,11 @@
     <h2>Männlich - Weiblich Zähler</h2>
     <p>Anzahl aller Männer:  {{azman}}</p>
     <p>Anzahl aller Frauen:  {{azwoman}}</p>
+    <p>Durchschnitt aller Frauen und Männer:  {{avgwm.toFixed(2)}}</p>
     <div >
       <button v-on:click="addman" class="btn btn-info me-2 mt-2">Mann</button>
-      <button v-on:click="addwoman" class="btn btn-info  mt-2">Frau</button>
+      <button v-on:click="addwoman" class="btn btn-info me-2 mt-2">Frau</button>
+      <button v-on:click="avgwoma" class="btn btn-info  mt-2">Durchschnitt berechnen</button>
     </div>
     
   </div>
@@ -60,7 +62,8 @@ export default {
       isDeleteChildModalVisible: false,      
       selectedChildId: null,
       azman: 0,
-      azwoman: 0
+      azwoman: 0,
+      avgwm: 0
     }
   },
   computed: {    
@@ -104,6 +107,9 @@ export default {
     addwoman(){
       console.log("Frau");
       this.azwoman++;
+    },
+    avgwoma(){
+      this.avgwm = this.azman / this.azwoman
     },
     newParent(){
       this.$router.push('/create-parent');
