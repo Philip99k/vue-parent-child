@@ -3,98 +3,144 @@
   <div class="border p-2">
     <h2>Parent</h2>
     <select v-if="parentExists" v-model="selectedParentId" class="form-select">
-      <option v-for="parent in parents" v-bind:value="parent.id" v-bind:key="parent.id" id="parent-select">
+      <option
+        v-for="parent in parents"
+        v-bind:value="parent.id"
+        v-bind:key="parent.id"
+        id="parent-select"
+      >
         {{ parent.name }}
       </option>
     </select>
     <div>
-      <button v-if="parentExists" @click="deleteParent" class="btn btn-danger mt-2 me-2">Delete selected parent</button>
-      <button @click="newParent" class="btn btn-primary mt-2">Create new parent</button>
+      <button
+        v-if="parentExists"
+        @click="deleteParent"
+        class="btn btn-danger mt-2 me-2"
+      >
+        Delete selected parent
+      </button>
+      <button @click="newParent" class="btn btn-primary mt-2">
+        Create new parent
+      </button>
     </div>
   </div>
 
   <div v-if="parentExists" class="border mt-2 p-2">
     <h2>Children</h2>
     <ul class="list-group">
-      <li v-for="child in children" v-bind:key="child.id" class="list-group-item  d-flex justify-content-between align-items-center">
-        {{ child.firstName }} {{ child.lastName }}
-        <button @click="deleteChild(child.id)" class="btn btn-danger">Delete</button>
+      <li
+        v-for="child in children"
+        v-bind:key="child.id"
+        class="list-group-item d-flex justify-content-between align-items-center"
+      >
+        {{ child.firstName }} {{ child.lastName }} Geburtsdatum: {{ child.birthdate }} Age: {{age(child.birthdate)}}
+        <button @click="deleteChild(child.id)" class="btn btn-danger">
+          Delete
+        </button>
       </li>
     </ul>
-    <button @click="newChild" class="btn btn-primary  mt-2">Create new child</button>
+    <button @click="newChild" class="btn btn-primary mt-2">
+      Create new child
+    </button>
   </div>
 
-  <Info/>
+  <div class="border mt-2 p-2">
+    <h2>Richtige Infoseite</h2>
+    <button @click="infoPage" class="btn btn-primary mt-2">Info Seite</button>
+  </div>
 
-  <DeleteModal v-if="isDeleteParentModalVisible"
-    @close="closeModalParent" @deleteOk="deleteFromModalParent"
-    typeOfElement="Parent" :nameOfElement="nameOfSelectedParent" />
+  <Info />
 
-  <DeleteModal v-if="isDeleteChildModalVisible"
-    @close="closeModalChild" @deleteOk="deleteFromModalChild"
-    typeOfElement="Child" :nameOfElement="nameOfSelectedChild" />
+  <DeleteModal
+    v-if="isDeleteParentModalVisible"
+    @close="closeModalParent"
+    @deleteOk="deleteFromModalParent"
+    typeOfElement="Parent"
+    :nameOfElement="nameOfSelectedParent"
+  />
+
+  <DeleteModal
+    v-if="isDeleteChildModalVisible"
+    @close="closeModalChild"
+    @deleteOk="deleteFromModalChild"
+    typeOfElement="Child"
+    :nameOfElement="nameOfSelectedChild"
+  />
 </template>
 
 <script>
 import DeleteModal from "../components/DeleteModal.vue";
 import Info from "../components/Info.vue";
 export default {
-  components:{
+  components: {
     DeleteModal,
-    Info
+    Info,
   },
-  data(){   
+  data() {
     return {
       isDeleteParentModalVisible: false,
-      isDeleteChildModalVisible: false,      
-      selectedChildId: null
-    }
+      isDeleteChildModalVisible: false,
+      selectedChildId: null,
+    };
   },
-  computed: {    
-    parents(){
+  computed: {
+    
+    parents() {
       return this.$store.getters.allParents;
     },
-    parentExists(){
+    parentExists() {
       return this.$store.getters.parentExists;
     },
     selectedParentId: {
-      get(){
+      get() {
         return this.$store.state.parents.selectedParentId;
       },
-      set(id){
-        this.$store.dispatch('updateSelectedParentId',id);
-      }
+      set(id) {
+        this.$store.dispatch("updateSelectedParentId", id);
+      },
     },
-    children(){
-      return this.$store.getters.childrenOfSelectedParent;      
+    children() {
+      return this.$store.getters.childrenOfSelectedParent;
     },
-    nameOfSelectedChild(){
-      const selectedChild = this.$store.getters.childrenOfSelectedParent
-        .filter(child => 
-          child.id === this.$data.selectedChildId
-        )[0];
+    nameOfSelectedChild() {
+      const selectedChild = this.$store.getters.childrenOfSelectedParent.filter(
+        (child) => child.id === this.$data.selectedChildId
+      )[0];
       return selectedChild.firstName + " " + selectedChild.lastName;
-    },    
-    nameOfSelectedParent(){
-      const selectedParent = this.$store.getters.allParents
-        .filter(parent => 
-          parent.id === this.$store.state.parents.selectedParentId
-        )[0];
+    },
+    nameOfSelectedParent() {
+      const selectedParent = this.$store.getters.allParents.filter(
+        (parent) => parent.id === this.$store.state.parents.selectedParentId
+      )[0];
       return selectedParent.name;
-    }    
+    },
   },
-  methods:{
-    newParent(){
-      this.$router.push('/create-parent');
+  methods: {
+    age(birthdate) {
+      const today = new Date();
+      birthdate = new Date(birthdate);
+      let age = today.getFullYear() - birthdate.getFullYear();
+      const m = today.getMonth() - birthdate.getMonth();
+      if (m < 0 || (m === 0 && today.getDate() < birthdate.getDate())) {
+        age = age - 1;
+      }
+      return age;
     },
-    newChild(){
-      this.$router.push('/create-child');
+    infoPage() {
+      this.$router.push("/info-page");
     },
-    deleteChild(id){      
+    newParent() {
+      this.$router.push("/create-parent");
+    },
+    newChild() {
+      this.$router.push("/create-child");
+    },
+    deleteChild(id) {
       this.selectedChildId = id;
       this.showDeleteChildModal();
     },
-    deleteParent(){      
+    deleteParent() {
       this.showDeleteParentModal();
     },
     showDeleteChildModal() {
@@ -104,19 +150,19 @@ export default {
       this.isDeleteParentModalVisible = true;
     },
     closeModalParent() {
-      this.isDeleteParentModalVisible = false;      
+      this.isDeleteParentModalVisible = false;
     },
     closeModalChild() {
-      this.isDeleteChildModalVisible = false;      
+      this.isDeleteChildModalVisible = false;
     },
-    deleteFromModalParent(){      
-      this.$store.dispatch('deleteSelectedParent');
+    deleteFromModalParent() {
+      this.$store.dispatch("deleteSelectedParent");
       this.closeModalParent();
     },
-    deleteFromModalChild(){      
-      this.$store.dispatch('deleteChild', this.selectedChildId);
+    deleteFromModalChild() {
+      this.$store.dispatch("deleteChild", this.selectedChildId);
       this.closeModalChild();
-    }
-  }
-}
+    },
+  },
+};
 </script>
