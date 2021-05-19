@@ -6,7 +6,16 @@
       <option v-for="parent in parents" v-bind:value="parent.id" v-bind:key="parent.id" id="parent-select">
         {{ parent.name }}
       </option>
+       
     </select>
+   <div>
+     <div v-for="parent in parents" v-bind:value="parent.id" v-bind:key="parent.id" id="parent-select">
+       <p  v-if="selectedParentId == parent.id">{{ parent.gender }}</p>
+      </div>
+   </div>
+      
+    <br>
+    <!-- <p v-for="parent in parents" v-bind:value="parent.id" v-bind:key="parent.id" id="parent-select">{{ parent.gender }}</p> -->
     <div>
       <button v-if="parentExists" @click="deleteParent" class="btn btn-danger mt-2 me-2">Delete selected parent</button>
       <button @click="newParent" class="btn btn-primary mt-2">Create new parent</button>
@@ -17,12 +26,29 @@
     <h2>Children</h2>
     <ul class="list-group">
       <li v-for="child in children" v-bind:key="child.id" class="list-group-item  d-flex justify-content-between align-items-center">
-        {{ child.name }}
+        {{ child.firstName }} {{ child.lastName }}
         <button @click="deleteChild(child.id)" class="btn btn-danger">Delete</button>
       </li>
     </ul>
     <button @click="newChild" class="btn btn-primary  mt-2">Create new child</button>
   </div>
+
+  <div v-if="parentExists" class="border mt-2 p-2">
+    <h2>Männlich - Weiblich Zähler</h2>
+    <p>Anzahl aller Männer:  {{azman}}</p>
+    <p>Anzahl aller Frauen:  {{azwoman}}</p>
+    <p>Durchschnitt aller Frauen und Männer:  {{avgwm.toFixed(2)}}</p>
+    <div >
+      <button v-on:click="addman" class="btn btn-info me-2 mt-2">Mann</button>
+      <button v-on:click="addwoman" class="btn btn-info me-2 mt-2">Frau</button>
+      <button v-on:click="avgwoma" class="btn btn-info  mt-2">Durchschnitt berechnen</button>
+    </div>
+    
+  </div>
+
+  <Info/>
+
+  <GenderInfo/>
 
   <DeleteModal v-if="isDeleteParentModalVisible"
     @close="closeModalParent" @deleteOk="deleteFromModalParent"
@@ -35,27 +61,34 @@
 
 <script>
 import DeleteModal from "../components/DeleteModal.vue";
+import Info from "../components/Info.vue";
+import GenderInfo from "../components/GenderInfo.vue";
 export default {
   components:{
     DeleteModal,
+    Info,
+    GenderInfo
   },
   data(){   
     return {
       isDeleteParentModalVisible: false,
       isDeleteChildModalVisible: false,      
-      selectedChildId: null
+      selectedChildId: null,
+      azman: 0,
+      azwoman: 0,
+      avgwm: 0
     }
   },
   computed: {    
     parents(){
-      return this.$store.getters.parentSet;
+      return this.$store.getters.allParents;
     },
     parentExists(){
       return this.$store.getters.parentExists;
     },
     selectedParentId: {
       get(){
-        return this.$store.state.selectedParentId;
+        return this.$store.state.parents.selectedParentId;
       },
       set(id){
         this.$store.dispatch('updateSelectedParentId',id);
@@ -69,17 +102,28 @@ export default {
         .filter(child => 
           child.id === this.$data.selectedChildId
         )[0];
-      return selectedChild.name;
+      return selectedChild.firstName + " " + selectedChild.lastName;
     },    
     nameOfSelectedParent(){
-      const selectedParent = this.$store.getters.parentSet
+      const selectedParent = this.$store.getters.allParents
         .filter(parent => 
-          parent.id === this.$store.state.selectedParentId
+          parent.id === this.$store.state.parents.selectedParentId
         )[0];
       return selectedParent.name;
     }    
   },
   methods:{
+    addman(){
+      console.log("Mann");
+      this.azman++;
+    },
+    addwoman(){
+      console.log("Frau");
+      this.azwoman++;
+    },
+    avgwoma(){
+      this.avgwm = this.azman / this.azwoman
+    },
     newParent(){
       this.$router.push('/create-parent');
     },
