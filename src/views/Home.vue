@@ -33,6 +33,7 @@
     <button @click="newChild" class="btn btn-primary  mt-2">Create new child</button>
   </div>
 
+<<<<<<< HEAD
   <div v-if="parentExists" class="border mt-2 p-2">
     <h2>Männlich - Weiblich Zähler</h2>
     <p>Anzahl aller Männer:  {{azman}}</p>
@@ -50,6 +51,10 @@
 
   <GenderInfo/>
 
+=======
+  <Info/>
+
+>>>>>>> aad88e729940b1402b9bf047f7bbd4f3f2e4ee4e
   <DeleteModal v-if="isDeleteParentModalVisible"
     @close="closeModalParent" @deleteOk="deleteFromModalParent"
     typeOfElement="Parent" :nameOfElement="nameOfSelectedParent" />
@@ -62,12 +67,19 @@
 <script>
 import DeleteModal from "../components/DeleteModal.vue";
 import Info from "../components/Info.vue";
+<<<<<<< HEAD
 import GenderInfo from "../components/GenderInfo.vue";
 export default {
   components:{
     DeleteModal,
     Info,
     GenderInfo
+=======
+export default {
+  components:{
+    DeleteModal,
+    Info
+>>>>>>> aad88e729940b1402b9bf047f7bbd4f3f2e4ee4e
   },
   data(){   
     return {
