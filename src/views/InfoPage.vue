@@ -19,6 +19,8 @@
 
 <script>
 export default {
+
+    
   name: "InfoPage", 
   computed :{
     numberOfChildren(){        
